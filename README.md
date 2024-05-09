@@ -1,13 +1,13 @@
 ## Installation
 
 ```console
-$ npm install huno
+$ npm install huno-server
 ```
 
 Usage example
 
 ```ts
-import Huno, { sendJson, parseJsonBody } from 'huno';
+import Huno, { sendJson, parseJsonBody } from 'huno-server';
 
 const app = new Huno();
 
