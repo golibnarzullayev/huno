@@ -1,18 +1,18 @@
 ## Installation
 
 ```console
-$ npm install apex
+$ npm install node-server
 ```
 
 Usage example
 
 ```ts
-import Apex, { sendJson, parseJsonBody } from 'apex';
+import Apex, { sendJson, parseJsonBody } from 'node-server';
 
 const app = new Apex();
 
 app.get('/', function ({ req, res ) {
-  sendJson(res, { message: 'Hello apex' });
+  sendJson(res, { message: 'Hello node-server' });
 });
 
 app.post('/', function({ req, res }) {

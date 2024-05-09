@@ -1,6 +1,6 @@
-import { Apex } from './app';
+import { NodeServer } from './app';
 
 export { parseJsonBody } from './json-body';
 export { sendJson } from './send-json';
 
-module.exports = Apex;
+module.exports = NodeServer;

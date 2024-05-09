@@ -4,7 +4,7 @@ import { Route } from './route';
 import { HttpMethod, Middleware, RouteHandler } from './types';
 import { sendJson } from './send-json';
 
-export class Apex {
+export class NodeServer {
   private readonly server: Server;
   private readonly routes: Route[];
   private readonly middleware: Middleware[];
