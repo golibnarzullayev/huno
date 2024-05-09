@@ -12,7 +12,7 @@ import Apex, { sendJson, parseJsonBody } from 'apex';
 const app = new Apex();
 
 app.get('/', function ({ req, res ) {
-  sendJson(res, { message: 'Hello zedpress' });
+  sendJson(res, { message: 'Hello apex' });
 });
 
 app.post('/', function({ req, res }) {
