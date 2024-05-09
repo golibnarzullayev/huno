@@ -1,16 +1,16 @@
 {
-  "name": "node-server",
+  "name": "huno",
   "version": "1.0.0",
   "description": "Node server app library",
   "author": "G'olibjon Narzullayev",
   "license": "MIT",
-  "homepage": "https://github.com/golibnarzullayev/apex#readme",
+  "homepage": "https://github.com/golibnarzullayev/huno#readme",
   "keywords": ["mini", "app", "apex"],
   "files": ["dist/**/*"],
   "main": "dist/index.js",
   "scripts": {
     "prepublishOnly": "tsc --outDir dist",
-    "release": "release-it --ci --github.release",
+    "release": "release-it --ci",
     "test": "vitest run"
   },
   "dependencies": {

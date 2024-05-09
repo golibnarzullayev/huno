@@ -1,18 +1,18 @@
 ## Installation
 
 ```console
-$ npm install node-server
+$ npm install huno
 ```
 
 Usage example
 
 ```ts
-import Apex, { sendJson, parseJsonBody } from 'node-server';
+import Apex, { sendJson, parseJsonBody } from 'huno';
 
 const app = new Apex();
 
 app.get('/', function ({ req, res ) {
-  sendJson(res, { message: 'Hello node-server' });
+  sendJson(res, { message: 'Hello Huno });
 });
 
 app.post('/', function({ req, res }) {
