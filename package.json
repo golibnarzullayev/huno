@@ -10,7 +10,7 @@
   "main": "dist/index.js",
   "scripts": {
     "prepublishOnly": "tsc --outDir dist",
-    "release": "release-it --ci",
+    "release": "release-it --ci --github.release",
     "test": "vitest run"
   },
   "dependencies": {
