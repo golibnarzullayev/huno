@@ -7,9 +7,9 @@ $ npm install huno
 Usage example
 
 ```ts
-import Apex, { sendJson, parseJsonBody } from 'huno';
+import Huno, { sendJson, parseJsonBody } from 'huno';
 
-const app = new Apex();
+const app = new Huno();
 
 app.get('/', function ({ req, res ) {
   sendJson(res, { message: 'Hello Huno });
