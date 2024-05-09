@@ -12,7 +12,7 @@ import Huno, { sendJson, parseJsonBody } from 'huno';
 const app = new Huno();
 
 app.get('/', function ({ req, res ) {
-  sendJson(res, { message: 'Hello Huno });
+  sendJson(res, { message: 'Hello Huno' });
 });
 
 app.post('/', function({ req, res }) {
