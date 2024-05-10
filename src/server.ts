@@ -1,10 +1,10 @@
-import http from 'node:http';
+import http, { RequestListener, Server as HttpServer } from 'node:http';
 
 export class Server {
-  private readonly handler: http.RequestListener;
-  private app: http.Server | null = null;
+  private readonly handler: RequestListener;
+  private app: HttpServer | null = null;
 
-  constructor(handler: http.RequestListener) {
+  constructor(handler: RequestListener) {
     this.handler = handler;
   }
 

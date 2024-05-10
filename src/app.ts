@@ -1,18 +1,18 @@
-import http from 'node:http';
+import { RequestListener, ServerResponse } from 'node:http';
+import { match as pathMatch } from 'path-to-regexp'
 import { Server } from './server';
-import { Route } from './route';
-import { HttpMethod, Middleware, RouteHandler } from './types';
+import { HttpError, HttpMethod, Middleware, RouteHandler, RouteWithParams } from './types';
 import { sendJson } from './send-json';
 
 export class HunoServer {
   private readonly server: Server;
-  private readonly routes: Route[];
+  private readonly routes: RouteWithParams[];
   private readonly middleware: Middleware[];
 
   constructor() {
-    this.server = new Server(this.handleRequest.bind(this));
     this.routes = [];
     this.middleware = [];
+    this.server = this.createServer();
   }
 
   public use(middleware: Middleware): void {
@@ -40,24 +40,90 @@ export class HunoServer {
   }
 
   private addRoute(method: HttpMethod, path: string, handler: RouteHandler): void {
-    this.routes.push(new Route(method, path, handler));
+    const match = path === undefined ? undefined : pathMatch<Record<string, string>>(path);
+
+    this.routes.push({ method, path, match, handler });
+  };
+
+  private handleRequest(routesWithMatch: RouteWithParams[]): RequestListener {
+    return async (request, response) => {
+      const { pathname, searchParams } = new URL(request.url ?? '', `http://${request.headers.host}`);
+      let matched = false;
+      const processRoute = async (routeIndex: number) => {
+        if (routeIndex > routesWithMatch.length - 1) {
+          return;
+        }
+        const route = routesWithMatch[routeIndex];
+        const { method, match, handler } = route;
+        if (method !== undefined && method !== request.method) {
+          return;
+        }
+        let pathParams: Record<string, string> = {};
+        if (match !== undefined) {
+          const matchResult = match(pathname);
+          if (matchResult === false) {
+            return;
+          }
+          pathParams = matchResult.params;
+        }
+        matched = true;
+        let nextIsCalled = false;
+        const next = () => {
+          nextIsCalled = true;
+          return processRoute(routeIndex + 1);
+        };
+        try {
+          const result = handler({ req: request, res: response, pathParams, searchParams, next });
+          if (result instanceof Promise) {
+            await result;
+          }
+          if (!nextIsCalled) {
+            await next();
+          }
+        } catch (error) {
+          let statusCode = 500;
+          let message: string | object = 'Something went wrong';
+          if (error instanceof Error) {
+            message = error.message;
+          }
+          if (error instanceof HttpError) {
+            statusCode = error.statusCode;
+            if (typeof error.details === 'string') {
+              message = error.details;
+            }
+          }
+          sendJson(response, { message }, statusCode);
+          console.error(error);
+        }
+      };
+      for (let routeIndex = 0; routeIndex < routesWithMatch.length; routeIndex++) {
+        await processRoute(routeIndex);
+      }
+      if (!matched) {
+        sendJson(response, { message: `No route for ${request.method} ${pathname}` }, 404);
+      }
+    };
   }
 
-  private async handleRequest(req: http.IncomingMessage, res: http.ServerResponse) {
-    const matchingRoute = this.routes.find(
-      (route) => route.method === req.method && route.matches(req.url),
-    );
+  public handleError = (error: Error | HttpError, response: ServerResponse) => {
+    let statusCode = 500;
+    let message: string | object = 'Something went wrong';
 
-    if (matchingRoute) {
-      const params = matchingRoute.extractParams(req.url as string);
+    message = error.message;
 
-      for (const middleware of this.middleware) {
-        await new Promise((resolve: any) => middleware(req, res, resolve));
+    if (error instanceof HttpError) {
+      statusCode = error.statusCode;
+      if (typeof error.details === 'string') {
+        message = error.details;
       }
-      await matchingRoute.handler({ req, res, params });
-    } else {
-      sendJson(res, { message: `No route for ${req.method} ${req.url}` }, 404);
     }
+
+    sendJson(response, { message }, statusCode);
+    console.error(error);
+  };
+
+  private createServer = (): Server => {
+    return new Server(this.handleRequest(this.routes));
   }
 
   public start(port: number, callback?: () => void): void {
