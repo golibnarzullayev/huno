@@ -2,7 +2,7 @@ import { type IncomingMessage } from 'node:http';
 import { collectChunks } from './chunk';
 import { CONTENT_TYPES, HEADERS } from './types';
 
-export const getBody = async (request: IncomingMessage) => {
+export const parseJsonBody = async (request: IncomingMessage) => {
   if (request.headers[HEADERS.CONTENT_TYPE] !== CONTENT_TYPES.JSON) {
     return;
   }
