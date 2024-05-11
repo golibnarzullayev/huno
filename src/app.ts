@@ -1,5 +1,5 @@
 import { RequestListener, ServerResponse } from 'node:http';
-import { match as pathMatch } from 'path-to-regexp'
+import { match as pathMatch } from 'path-to-regexp';
 import { Server } from './server';
 import { HttpError, HttpMethod, Middleware, RouteHandler, RouteWithParams } from './types';
 import { sendJson } from './send-json';
@@ -12,7 +12,7 @@ export class HunoServer {
   constructor() {
     this.routes = [];
     this.middleware = [];
-    this.server = this.createServer();
+    this.server = this.handleServer();
   }
 
   public use(middleware: Middleware): void {
@@ -43,11 +43,14 @@ export class HunoServer {
     const match = path === undefined ? undefined : pathMatch<Record<string, string>>(path);
 
     this.routes.push({ method, path, match, handler });
-  };
+  }
 
   private handleRequest(routesWithMatch: RouteWithParams[]): RequestListener {
     return async (request, response) => {
-      const { pathname, searchParams } = new URL(request.url ?? '', `http://${request.headers.host}`);
+      const { pathname, searchParams } = new URL(
+        request.url ?? '',
+        `http://${request.headers.host}`,
+      );
       let matched = false;
       const processRoute = async (routeIndex: number) => {
         if (routeIndex > routesWithMatch.length - 1) {
@@ -58,13 +61,13 @@ export class HunoServer {
         if (method !== undefined && method !== request.method) {
           return;
         }
-        let pathParams: Record<string, string> = {};
+        let params: Record<string, string> = {};
         if (match !== undefined) {
           const matchResult = match(pathname);
           if (matchResult === false) {
             return;
           }
-          pathParams = matchResult.params;
+          params = matchResult.params;
         }
         matched = true;
         let nextIsCalled = false;
@@ -73,7 +76,13 @@ export class HunoServer {
           return processRoute(routeIndex + 1);
         };
         try {
-          const result = handler({ req: request, res: response, pathParams, searchParams, next });
+          const result = handler({
+            req: request,
+            res: response,
+            params: params,
+            query: searchParams,
+            next: next,
+          });
           if (result instanceof Promise) {
             await result;
           }
@@ -122,9 +131,9 @@ export class HunoServer {
     console.error(error);
   };
 
-  private createServer = (): Server => {
+  private handleServer = (): Server => {
     return new Server(this.handleRequest(this.routes));
-  }
+  };
 
   public start(port: number, callback?: () => void): void {
     this.server.start(port, callback);

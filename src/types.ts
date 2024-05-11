@@ -12,8 +12,8 @@ export enum HttpMethod {
 type HandlerParams = {
   req: IncomingMessage;
   res: ServerResponse;
-  pathParams: Record<string, string>;
-  searchParams: URLSearchParams;
+  params: Record<string, string>;
+  query: URLSearchParams;
   next: () => Promise<void>;
 };
 
@@ -23,11 +23,11 @@ export type Route = {
   method?: HttpMethod;
   path?: string;
   handler: RouteHandler;
-}
+};
 
 export type RouteWithParams = Route & {
-  match?: MatchFunction<Record<string, string>>
-}
+  match?: MatchFunction<Record<string, string>>;
+};
 
 export type Middleware = (
   req: http.IncomingMessage,

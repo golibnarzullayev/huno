@@ -22,15 +22,15 @@ app.post('/', async function ({ req, res }) {
 });
 
 // using params
-app.get('/:id', function ({ req, res, pathParams }) {
-  const id = pathParams.id;
+app.get('/:id', function ({ req, res, params }) {
+  const id = params.id;
   sendJson(res, { id: id });
 });
 
 // using query params
-// url: http://localhost:3000?search=huno
-app.get('/', function ({ req, res, searchParams }) {
-  const search = searchParams.get('search');
+// E.g.: url: http://localhost:3000?search=huno
+app.get('/', function ({ req, res, query }) {
+  const search = query.get('search');
   sendJson(res, { search: search });
 });
 
