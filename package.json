@@ -5,14 +5,8 @@
   "author": "G'olibjon Narzullayev",
   "license": "MIT",
   "homepage": "https://github.com/golibnarzullayev/huno#readme",
-  "keywords": [
-    "mini",
-    "app",
-    "huno-server"
-  ],
-  "files": [
-    "dist/**/*"
-  ],
+  "keywords": ["mini", "app", "huno-server"],
+  "files": ["dist/**/*"],
   "main": "dist/index.js",
   "scripts": {
     "prepublishOnly": "tsc --outDir dist",
