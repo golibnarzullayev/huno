@@ -1,12 +1,18 @@
 {
   "name": "huno-server",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Node server app library",
   "author": "G'olibjon Narzullayev",
   "license": "MIT",
   "homepage": "https://github.com/golibnarzullayev/huno#readme",
-  "keywords": ["mini", "app", "huno-server"],
-  "files": ["dist/**/*"],
+  "keywords": [
+    "mini",
+    "app",
+    "huno-server"
+  ],
+  "files": [
+    "dist/**/*"
+  ],
   "main": "dist/index.js",
   "scripts": {
     "prepublishOnly": "tsc --outDir dist",
