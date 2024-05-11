@@ -5,20 +5,14 @@
   "author": "G'olibjon Narzullayev",
   "license": "MIT",
   "homepage": "https://github.com/golibnarzullayev/huno#readme",
-  "keywords": [
-    "mini",
-    "app",
-    "huno-server"
-  ],
-  "files": [
-    "dist/**/*"
-  ],
+  "keywords": ["mini", "app", "huno-server"],
+  "files": ["dist/**/*"],
   "main": "dist/index.js",
   "scripts": {
     "prepublishOnly": "tsc --outDir dist",
     "release": "release-it --ci",
     "test": "vitest run",
-    "dev": "nodemon test-folders/index.js"
+    "compress": "npm pack && gzip -k -f -9"
   },
   "dependencies": {
     "path-to-regexp": "^6.2.1"
